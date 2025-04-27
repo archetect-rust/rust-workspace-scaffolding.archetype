@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+
+members = ["crates/*", "xtask"]
+
+default-members = ["crates/{{ project-name }}-bin"]
+
+[workspace.package]
+edition = "2024"
+repository = "https://github.com/example/{{ project-name }}"
+license = "MIT"
+version = "0.1.0"
+publish = true
+
+[workspace.dependencies] {% for crate in crates %}{% if crate != "bin" and crate != "xtask" %}
+{{ project-name }}-{{ crate | kebab_case }} = { path = "crates/{{ project-name}}-{{ crate | kebab_case }}", version = "0.1.0" }{% endif %}
+{%- endfor %}
+
+anyhow = "1"
+clap = { version = "4", features = ["cargo", "derive", "env", "string"] }
+thiserror = "2"
